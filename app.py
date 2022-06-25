@@ -32,7 +32,5 @@ def getLTV():
     return {'collection_address': address, 'current_price': last_price, 'volatility': last_vol, 'loan_time': loan_time,
             'rec_ltv': rec_ltv, 'rec_loan_amount': rec_loan_amount, 'liquidation_prob': liquidation_prob}
 
-    return results
-
 if __name__ == "__main__":
     app.run()
