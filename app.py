@@ -7,6 +7,11 @@ import time
 import utils
 from scipy import stats
 from flask_cors import CORS, cross_origin
+import math
+import statistics
+from dateutil.relativedelta import relativedelta, MO
+from datetime import timedelta
+from scipy.stats.stats import pearsonr   
 
 
 app = Flask(__name__)
@@ -14,6 +19,7 @@ CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
 
 rolling_vol_window = 30
+BASE_RATE = 8
 
 @app.route('/', methods=['GET', 'POST'])
 @cross_origin()
@@ -35,7 +41,7 @@ def welcome():
 @app.route('/getLTV', methods=['GET'])
 @cross_origin()
 def getLTV():
-    address = request.args.get('address') if request.args.get('address') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
+    address = request.args.get('address').lower() if request.args.get('address') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
     loan_time = int(request.args.get('loanTime')) if request.args.get('loanTime') else 30
     desired_liquidation_prob = float(request.args.get('liquidationProb')) if request.args.get('liquidationProb') else 0.25
     start_date = datetime(2022, 1, 1)
@@ -50,7 +56,19 @@ def getLTV():
             'rec_ltv': rec_ltv, 'rec_loan_amount': rec_loan_amount, 'liquidation_prob': liquidation_prob}
 
 
-@app.route('/getLTVMultiple/', methods = ['GET'])
+@app.route('/getInterestRate', methods = ['GET'])
+@cross_origin()
+def getInterestRate():
+    address = request.args.get('address').lower() if request.args.get('address') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
+    tokenId = request.args.get('tokenId') if request.args.get('tokenId') else '133851'
+    risk = utils.ETHNY_risk('1', address, tokenId)
+    interest_rate = risk * BASE_RATE
+    return {'collection_address': address, 'token_id': tokenId, 'risk': risk, 'interest_rate': interest_rate}
+
+
+
+
+@app.route('/getLTVMultiple', methods = ['GET'])
 @cross_origin()
 def getLTVMultiple():
     addresses_raw = request.args.get('addressList') if request.args.get('addressList') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
