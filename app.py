@@ -11,12 +11,11 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 rolling_vol_window = 30
 
 @app.route('/', methods=['GET', 'POST'])
-@cross_origin()
 def welcome():
     return "Hello World!"
 
@@ -33,7 +32,6 @@ def welcome():
 #             'rec_ltv': rec_ltv, 'rec_loan_amount': rec_loan_amount}
 
 @app.route('/getLTV', methods=['GET'])
-@cross_origin()
 def getLTV():
     address = request.args.get('address') if request.args.get('address') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
     loan_time = int(request.args.get('loanTime')) if request.args.get('loanTime') else 30
@@ -51,7 +49,6 @@ def getLTV():
 
 
 @app.route('/getLTVMultiple/', methods = ['GET'])
-@cross_origin()
 def getLTVMultiple():
     addresses_raw = request.args.get('addressList') if request.args.get('addressList') else '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d'
     # Parse the comma-separated list of addresses
