@@ -1,6 +1,6 @@
 from flask import Flask, request
 import numpy as np
-import pandas as pds
+import pandas as pd
 import requests
 from datetime import datetime
 import time

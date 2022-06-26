@@ -63,9 +63,11 @@ def getInterestRate():
     tokenId = request.args.get('tokenId') if request.args.get('tokenId') else '133851'
     risk = utils.ETHNY_risk('1', address, tokenId)
     interest_rate = risk * BASE_RATE
+    if interest_rate > 10.2:
+        interest_rate = 10.2
+    elif interest_rate < 6:
+        interest_rate = 6 
     return {'collection_address': address, 'token_id': tokenId, 'risk': risk, 'interest_rate': interest_rate}
-
-
 
 
 @app.route('/getLTVMultiple', methods = ['GET'])
